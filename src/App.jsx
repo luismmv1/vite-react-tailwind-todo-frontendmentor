@@ -3,20 +3,26 @@ import TodoCreate from "./components/TodoCreate";
 import TodoList from "./components/TodoList";
 import TodoComputed from "./components/TodoComputed";
 import TodoFilter from "./components/TodoFilter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const initialStateTodos=[
+/* const initialStateTodos=[
   { id: 1, title: "Complete online JavaScript Course", completed: true},
   { id: 2, title: "Job around the park 3x", completed: false},
   { id: 3, title: "10 minutes mediatotion", completed: false},
   { id: 4, title: "Read For 1 hour", completed: false},
   { id: 5, title: "Pick up groceries", completed: false},
   { id: 6, title: "Complete Todo App On Frontend Mentor", completed: false}
-];
+]; */
+
+const initialStateTodos = JSON.parse(localStorage.getItem("todos")) || [];
 
 const App = () => {
 
   const [todos, setTodos] = useState(initialStateTodos);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  },[todos]);
 
   const createTodo = (title) => {
     const newTodo = {
@@ -61,9 +67,9 @@ const App = () => {
 
   return(
     
-    <div className="min-h-screen bg-gray-200 bg-[url('./assets/images/bg-mobile-light.jpg')] dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] bg-no-repeat bg-contain dark:bg-gray-900 transition-all duration-1000">
+    <div className="min-h-screen bg-gray-200 bg-[url('./assets/images/bg-mobile-light.jpg')] bg-contain bg-no-repeat transition-all duration-1000 dark:bg-gray-900 dark:bg-[url('./assets/images/bg-mobile-dark.jpg')] md:dark:bg-[url('./assets/images/bg-desktop-dark.jpg')] md:bg-[url('./assets/images/bg-desktop-light.jpg')]">
       <Header/>
-      <main className="container mx-auto mt-8 px-4">
+      <main className="container mx-auto mt-8 px-4 md:max-w-xl">
         <TodoCreate createTodo={createTodo}/>       
         <TodoList
           todos={filteredTodos()}
@@ -71,8 +77,8 @@ const App = () => {
           updateTodo={updateTodo}
         />
         <TodoComputed computedItemsLeft={computedItemsLeft} clearCompleted={clearCompleted} />
+        <TodoFilter changeFilter={changeFilter} filter={filter}/>
       </main>
-      <TodoFilter changeFilter={changeFilter} filter={filter}/>
       <footer className="text-center mt-8 dark:text-gray-400 transition-all duration-1000">Drag and drop to reorder list</footer>
         
     </div>  
